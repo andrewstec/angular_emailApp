@@ -7,5 +7,15 @@
 </h3>
 
 <div ng-repeat="message in messages">
-    This is the inbox.
+    <tr>
+        <td>
+            {{message.sender}}
+        </td>
+        <td>
+            {{message.subject}}
+        </td>
+        <td>
+            {{message.date | date }}
+        </td>
+    </tr>
 </div>

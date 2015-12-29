@@ -14,7 +14,7 @@ angular.module("MailboxApp", ["ui.router"])
 .service("messageStore", function() {
         var messages = [];
         var sampleSize = 100;
-        for ( var i = 0 ; i < sampleSize; i++ ) {
+        for ( var i = 0 ; i < 100; i++ ) {
             messages.push( {
                 sender: "john.smith" + i + "@gmail.com",
                 date: Date.now() - i * 2400000000,
@@ -22,11 +22,10 @@ angular.module("MailboxApp", ["ui.router"])
                 subject: "Report #" + i,
                 body: "This is the e-mail message body"
             })
-
-            return {
-                getMessages: function() {
-                    return messages;
-                }
+            }
+        return {
+            getMessages: function() {
+                return messages;
             }
         }
     })
