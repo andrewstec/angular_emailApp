@@ -1,3 +1,5 @@
+<div>
+
 <h2>
     Inbox
 </h2>
@@ -6,16 +8,34 @@
     You have {{messages.length}} messages.
 </h3>
 
-<div ng-repeat="message in messages">
-    <tr>
-        <td>
-            {{message.sender}}
-        </td>
-        <td>
-            {{message.subject}}
-        </td>
-        <td>
-            {{message.date | date }}
-        </td>
-    </tr>
+    <table>
+
+        <thead>
+        <th>
+            Sender
+        </th>
+        <th>
+            Subject
+        </th>
+        <th>
+            Date
+        </th>
+        </thead>
+
+        <tr ng-repeat="message in messages">
+            <td>
+                {{message.sender}}
+            </td>
+            <td>
+                <a ui-sref="message({id:message.id})">
+                {{message.subject}}
+                </a>
+            </td>
+            <td>
+                {{message.date | date }}
+            </td>
+        </tr>
+
+    </table>
+
 </div>
