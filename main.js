@@ -1,41 +1,113 @@
-angular.module("MailboxApp", ["ui.router"])
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
 
-.config(function($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise("/inbox");
-        $stateProvider.state("inbox", {
-            url: "/inbox",
-            templateUrl:"partials/inbox.html",
-            controller: function($scope, messageStore) {
-                //console.log("inbox")
-                $scope.messages = messageStore.getMessages();
-            }
-        })
-        .state("message", {
-                url: "/message/:id",
-                templateUrl: "partials/message.html",
-                controller: function($scope, messageStore, $stateParams) {
-                    $scope.message = messageStore.getMessages()
-                        .filter(function(message) {
-                            return message.id == $stateParams.id;
-                        })[0]
+angular.module("MailboxApp", ["ui.router"]).config(function ($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise("/inbox");
+    $stateProvider.state("inbox", {
+        url: "/inbox",
+        templateUrl: "partials/inbox.html",
+        controller: function controller($scope, messageStore, $element, $filter) {
+            //console.log("inbox")
+            //$scope.messages = messageStore.getMessages();
+
+            var MessageList = React.createClass({
+                displayName: "MessageList",
+
+                render: function render() {
+                    return React.createElement(
+                        "div",
+                        null,
+                        React.createElement(
+                            "div",
+                            null,
+                            React.createElement(
+                                "h2",
+                                null,
+                                this.props.messages.length,
+                                " Unread Messages"
+                            )
+                        ),
+                        React.createElement(
+                            "table",
+                            null,
+                            React.createElement(
+                                "thead",
+                                null,
+                                React.createElement(
+                                    "th",
+                                    null,
+                                    "Sender"
+                                ),
+                                React.createElement(
+                                    "th",
+                                    null,
+                                    "Subject"
+                                ),
+                                React.createElement(
+                                    "th",
+                                    null,
+                                    "Date"
+                                )
+                            ),
+                            this.props.messages.map(function (m, i) {
+                                return React.createElement(
+                                    "tr",
+                                    { key: i },
+                                    React.createElement(
+                                        "td",
+                                        null,
+                                        m.sender
+                                    ),
+                                    React.createElement(
+                                        "td",
+                                        null,
+                                        React.createElement(
+                                            "a",
+                                            { href: "/#/message/" + i },
+                                            m.subject
+                                        )
+                                    ),
+                                    React.createElement(
+                                        "td",
+                                        null,
+                                        $filter('date')(m.date)
+                                    )
+                                );
+                            })
+                        )
+                    );
                 }
-            })
-    })
-.service("messageStore", function() {
-        var messages = [];
-        var sampleSize = 100;
-        for ( var i = 0 ; i < 100; i++ ) {
-            messages.push( {
-                sender: "john.smith" + i + "@gmail.com",
-                date: Date.now() - i * 2400000000,
-                id: i,
-                subject: "Report #" + i,
-                body: "This is the e-mail message body"
-            })
-            }
-        return {
-            getMessages: function() {
-                return messages;
-            }
+            });
+            var messages = messageStore.getMessages();
+
+            React.render(React.createElement(MessageList, { messages: messages }), $element[0]);
         }
-    })
+    }).state("message", {
+        url: "/message/:id",
+        templateUrl: "partials/message.html",
+        controller: function controller($scope, messageStore, $stateParams) {
+            $scope.message = messageStore.getMessages().filter(function (message) {
+                return message.id == $stateParams.id;
+            })[0];
+        }
+    });
+}).service("messageStore", function () {
+    var messages = [];
+    var sampleSize = 100;
+    for (var i = 0; i < 100; i++) {
+        messages.push({
+            sender: "john.smith" + i + "@gmail.com",
+            date: Date.now() - i * 2400000000,
+            id: i,
+            subject: "Report #" + i,
+            body: "This is the e-mail message body"
+        });
+    }
+    return {
+        getMessages: function getMessages() {
+            return messages;
+        }
+    };
+});
+
+},{}]},{},[1]);
